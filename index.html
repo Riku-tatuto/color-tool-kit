@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -13,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
             color: #333;
@@ -22,10 +23,11 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
@@ -109,42 +111,6 @@
             gap: 10px;
         }
 
-        .slider-container {
-            margin-top: 8px;
-        }
-
-        .color-slider {
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: #e2e8f0;
-            outline: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-        }
-
-        .color-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .color-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-
         .color-display {
             width: 100%;
             height: 100px;
@@ -225,29 +191,9 @@
         }
 
         .info-value {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', monospace;
             font-size: 16px;
             color: #2d3748;
-            font-weight: 500;
-        }
-
-        .copy-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #48bb78;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .copy-notification.show {
-            transform: translateX(0);
         }
 
         @media (max-width: 768px) {
@@ -275,10 +221,6 @@
     <div class="container">
         <h1>🎨 カラーツールキット</h1>
         
-        <div class="copy-notification" id="copyNotification">
-            📋 コピーしました！
-        </div>
-        
         <div class="tools-grid">
             <!-- メインカラーピッカー -->
             <div class="tool-card main-display">
@@ -295,23 +237,14 @@
                     <div class="input-group">
                         <label>R (0-255)</label>
                         <input type="number" id="rgbR" min="0" max="255" value="102">
-                        <div class="slider-container">
-                            <input type="range" id="rgbRSlider" class="color-slider" min="0" max="255" value="102">
-                        </div>
                     </div>
                     <div class="input-group">
                         <label>G (0-255)</label>
                         <input type="number" id="rgbG" min="0" max="255" value="126">
-                        <div class="slider-container">
-                            <input type="range" id="rgbGSlider" class="color-slider" min="0" max="255" value="126">
-                        </div>
                     </div>
                     <div class="input-group">
                         <label>B (0-255)</label>
                         <input type="number" id="rgbB" min="0" max="255" value="234">
-                        <div class="slider-container">
-                            <input type="range" id="rgbBSlider" class="color-slider" min="0" max="255" value="234">
-                        </div>
                     </div>
                 </div>
                 <div class="color-display" id="rgbDisplay"></div>
@@ -325,23 +258,14 @@
                     <div class="input-group">
                         <label>H (0-360)</label>
                         <input type="number" id="hsvH" min="0" max="360" value="229">
-                        <div class="slider-container">
-                            <input type="range" id="hsvHSlider" class="color-slider" min="0" max="360" value="229">
-                        </div>
                     </div>
                     <div class="input-group">
                         <label>S (0-100)</label>
                         <input type="number" id="hsvS" min="0" max="100" value="56">
-                        <div class="slider-container">
-                            <input type="range" id="hsvSSlider" class="color-slider" min="0" max="100" value="56">
-                        </div>
                     </div>
                     <div class="input-group">
                         <label>V (0-100)</label>
                         <input type="number" id="hsvV" min="0" max="100" value="92">
-                        <div class="slider-container">
-                            <input type="range" id="hsvVSlider" class="color-slider" min="0" max="100" value="92">
-                        </div>
                     </div>
                 </div>
                 <div class="color-display" id="hsvDisplay"></div>
@@ -437,56 +361,7 @@
             };
         }
 
-        // RGB to Lab変換
-        function rgbToLab(r, g, b) {
-            // RGB to XYZ
-            let x = r / 255;
-            let y = g / 255;
-            let z = b / 255;
-
-            x = x > 0.04045 ? Math.pow((x + 0.055) / 1.055, 2.4) : x / 12.92;
-            y = y > 0.04045 ? Math.pow((y + 0.055) / 1.055, 2.4) : y / 12.92;
-            z = z > 0.04045 ? Math.pow((z + 0.055) / 1.055, 2.4) : z / 12.92;
-
-            x *= 100;
-            y *= 100;
-            z *= 100;
-
-            // Observer = 2°, Illuminant = D65
-            x = x / 95.047;
-            y = y / 100.000;
-            z = z / 108.883;
-
-            x = x > 0.008856 ? Math.pow(x, 1/3) : (7.787 * x) + (16/116);
-            y = y > 0.008856 ? Math.pow(y, 1/3) : (7.787 * y) + (16/116);
-            z = z > 0.008856 ? Math.pow(z, 1/3) : (7.787 * z) + (16/116);
-
-            return {
-                l: Math.round((116 * y) - 16),
-                a: Math.round(500 * (x - y)),
-                b: Math.round(200 * (y - z))
-            };
-        }
-
-        // RGB to CMYK変換
-        function rgbToCmyk(r, g, b) {
-            let c = 1 - (r / 255);
-            let m = 1 - (g / 255);
-            let y = 1 - (b / 255);
-
-            let k = Math.min(c, m, y);
-            
-            if (k === 1) {
-                return { c: 0, m: 0, y: 0, k: 100 };
-            }
-
-            c = Math.round(((c - k) / (1 - k)) * 100);
-            m = Math.round(((m - k) / (1 - k)) * 100);
-            y = Math.round(((y - k) / (1 - k)) * 100);
-            k = Math.round(k * 100);
-
-            return { c, m, y, k };
-        }
+        // 色の明度を計算
         function getLuminance(r, g, b) {
             const [rs, gs, bs] = [r, g, b].map(c => {
                 c = c / 255;
@@ -498,24 +373,19 @@
         // コピー機能
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showCopyNotification();
+                // 簡単な成功フィードバック
+                const originalText = event.target.textContent;
+                event.target.textContent = 'コピー済み!';
+                setTimeout(() => {
+                    event.target.textContent = originalText;
+                }, 1000);
             });
-        }
-
-        function showCopyNotification() {
-            const notification = document.getElementById('copyNotification');
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
         }
 
         // 結果表示関数
         function displayColorInfo(r, g, b, targetElement) {
             const hex = rgbToHex(r, g, b);
             const hsv = rgbToHsv(r, g, b);
-            const lab = rgbToLab(r, g, b);
-            const cmyk = rgbToCmyk(r, g, b);
             const luminance = getLuminance(r, g, b);
             
             targetElement.innerHTML = `
@@ -536,16 +406,7 @@
                     <button class="copy-btn" onclick="copyToClipboard('rgb(${r}, ${g}, ${b})')">コピー</button>
                 </div>
                 <div class="result-item">
-                    Lab: L*:${lab.l} a*:${lab.a} b*:${lab.b}
-                    <button class="copy-btn" onclick="copyToClipboard('lab(${lab.l} ${lab.a} ${lab.b})')">コピー</button>
-                </div>
-                <div class="result-item">
-                    CMYK: C:${cmyk.c}% M:${cmyk.m}% Y:${cmyk.y}% K:${cmyk.k}%
-                    <button class="copy-btn" onclick="copyToClipboard('cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)')">コピー</button>
-                </div>
-                <div class="result-item">
                     輝度: ${luminance.toFixed(3)}
-                    <button class="copy-btn" onclick="copyToClipboard('${luminance.toFixed(3)}')">コピー</button>
                 </div>
             `;
         }
@@ -558,38 +419,24 @@
             document.getElementById('mainColorDisplay').style.backgroundColor = color;
             
             const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
-            const lab = rgbToLab(rgb.r, rgb.g, rgb.b);
-            const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
             const luminance = getLuminance(rgb.r, rgb.g, rgb.b);
             
             document.getElementById('mainColorInfo').innerHTML = `
                 <div class="info-card">
                     <div class="info-title">HEX</div>
-                    <div class="info-value">${color.toUpperCase()} <button class="copy-btn" onclick="copyToClipboard('${color.toUpperCase()}')">コピー</button></div>
+                    <div class="info-value">${color.toUpperCase()}</div>
                 </div>
                 <div class="info-card">
                     <div class="info-title">RGB</div>
-                    <div class="info-value">(${rgb.r}, ${rgb.g}, ${rgb.b}) <button class="copy-btn" onclick="copyToClipboard('rgb(${rgb.r}, ${rgb.g}, ${rgb.b})')">コピー</button></div>
+                    <div class="info-value">(${rgb.r}, ${rgb.g}, ${rgb.b})</div>
                 </div>
                 <div class="info-card">
                     <div class="info-title">HSV</div>
-                    <div class="info-value">(${hsv.h}°, ${hsv.s}%, ${hsv.v}%) <button class="copy-btn" onclick="copyToClipboard('hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)')">コピー</button></div>
-                </div>
-                <div class="info-card">
-                    <div class="info-title">CSS</div>
-                    <div class="info-value">rgb(${rgb.r}, ${rgb.g}, ${rgb.b}) <button class="copy-btn" onclick="copyToClipboard('rgb(${rgb.r}, ${rgb.g}, ${rgb.b})')">コピー</button></div>
-                </div>
-                <div class="info-card">
-                    <div class="info-title">Lab</div>
-                    <div class="info-value">L*:${lab.l} a*:${lab.a} b*:${lab.b} <button class="copy-btn" onclick="copyToClipboard('lab(${lab.l} ${lab.a} ${lab.b})')">コピー</button></div>
-                </div>
-                <div class="info-card">
-                    <div class="info-title">CMYK</div>
-                    <div class="info-value">C:${cmyk.c}% M:${cmyk.m}% Y:${cmyk.y}% K:${cmyk.k}% <button class="copy-btn" onclick="copyToClipboard('cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)')">コピー</button></div>
+                    <div class="info-value">(${hsv.h}°, ${hsv.s}%, ${hsv.v}%)</div>
                 </div>
                 <div class="info-card">
                     <div class="info-title">輝度</div>
-                    <div class="info-value">${luminance.toFixed(3)} <button class="copy-btn" onclick="copyToClipboard('${luminance.toFixed(3)}')">コピー</button></div>
+                    <div class="info-value">${luminance.toFixed(3)}</div>
                 </div>
             `;
         }
@@ -605,30 +452,9 @@
             const validG = Math.max(0, Math.min(255, g));
             const validB = Math.max(0, Math.min(255, b));
             
-            // スライダーの値も更新
-            document.getElementById('rgbRSlider').value = validR;
-            document.getElementById('rgbGSlider').value = validG;
-            document.getElementById('rgbBSlider').value = validB;
-            
             const color = rgbToHex(validR, validG, validB);
             document.getElementById('rgbDisplay').style.backgroundColor = color;
             displayColorInfo(validR, validG, validB, document.getElementById('rgbResult'));
-        }
-
-        // RGBスライダーの更新
-        function updateRgbSlider() {
-            const r = parseInt(document.getElementById('rgbRSlider').value);
-            const g = parseInt(document.getElementById('rgbGSlider').value);
-            const b = parseInt(document.getElementById('rgbBSlider').value);
-            
-            // 数値入力も更新
-            document.getElementById('rgbR').value = r;
-            document.getElementById('rgbG').value = g;
-            document.getElementById('rgbB').value = b;
-            
-            const color = rgbToHex(r, g, b);
-            document.getElementById('rgbDisplay').style.backgroundColor = color;
-            displayColorInfo(r, g, b, document.getElementById('rgbResult'));
         }
 
         // HSV入力の更新
@@ -636,41 +462,6 @@
             const h = parseInt(document.getElementById('hsvH').value) || 0;
             const s = parseInt(document.getElementById('hsvS').value) || 0;
             const v = parseInt(document.getElementById('hsvV').value) || 0;
-            
-            // 値の範囲チェック
-            const validH = Math.max(0, Math.min(360, h));
-            const validS = Math.max(0, Math.min(100, s));
-            const validV = Math.max(0, Math.min(100, v));
-            
-            // スライダーの値も更新
-            document.getElementById('hsvHSlider').value = validH;
-            document.getElementById('hsvSSlider').value = validS;
-            document.getElementById('hsvVSlider').value = validV;
-            
-            const rgb = hsvToRgb(validH, validS, validV);
-            const color = rgbToHex(rgb.r, rgb.g, rgb.b);
-            
-            document.getElementById('hsvDisplay').style.backgroundColor = color;
-            displayColorInfo(rgb.r, rgb.g, rgb.b, document.getElementById('hsvResult'));
-        }
-
-        // HSVスライダーの更新
-        function updateHsvSlider() {
-            const h = parseInt(document.getElementById('hsvHSlider').value);
-            const s = parseInt(document.getElementById('hsvSSlider').value);
-            const v = parseInt(document.getElementById('hsvVSlider').value);
-            
-            // 数値入力も更新
-            document.getElementById('hsvH').value = h;
-            document.getElementById('hsvS').value = s;
-            document.getElementById('hsvV').value = v;
-            
-            const rgb = hsvToRgb(h, s, v);
-            const color = rgbToHex(rgb.r, rgb.g, rgb.b);
-            
-            document.getElementById('hsvDisplay').style.backgroundColor = color;
-            displayColorInfo(rgb.r, rgb.g, rgb.b, document.getElementById('hsvResult'));
-        }document.getElementById('hsvV').value) || 0;
             
             // 値の範囲チェック
             const validH = Math.max(0, Math.min(360, h));
@@ -711,16 +502,8 @@
             document.getElementById(id).addEventListener('input', updateRgbColor);
         });
         
-        ['rgbRSlider', 'rgbGSlider', 'rgbBSlider'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateRgbSlider);
-        });
-        
         ['hsvH', 'hsvS', 'hsvV'].forEach(id => {
             document.getElementById(id).addEventListener('input', updateHsvColor);
-        });
-        
-        ['hsvHSlider', 'hsvSSlider', 'hsvVSlider'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateHsvSlider);
         });
         
         document.getElementById('hexInput').addEventListener('input', updateHexColor);
