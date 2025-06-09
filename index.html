@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2a2a2a;
             min-height: 100vh;
             padding: 20px;
             color: #333;
@@ -26,7 +25,7 @@
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
         }
 
@@ -90,6 +89,37 @@
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
         }
 
         input[type="number"]:focus, input[type="text"]:focus {
@@ -111,6 +141,22 @@
             gap: 10px;
         }
 
+        .slider-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-with-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-with-slider input[type="number"] {
+            width: 70px;
+            flex-shrink: 0;
+        }
+
         .color-display {
             width: 100%;
             height: 100px;
@@ -127,7 +173,7 @@
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 14px;
             line-height: 1.6;
         }
@@ -138,6 +184,9 @@
             background: white;
             border-radius: 4px;
             border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .copy-btn {
@@ -148,12 +197,16 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
-            margin-left: 10px;
             transition: background-color 0.3s ease;
+            flex-shrink: 0;
         }
 
         .copy-btn:hover {
             background: #5a67d8;
+        }
+
+        .copy-btn.copied {
+            background: #48bb78;
         }
 
         .main-display {
@@ -182,6 +235,14 @@
             padding: 15px;
             border-radius: 10px;
             border: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
         }
 
         .info-title {
@@ -191,9 +252,27 @@
         }
 
         .info-value {
-            font-family: 'Courier New', monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 16px;
             color: #2d3748;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
         }
 
         @media (max-width: 768px) {
@@ -236,15 +315,24 @@
                 <div class="rgb-inputs">
                     <div class="input-group">
                         <label>R (0-255)</label>
-                        <input type="number" id="rgbR" min="0" max="255" value="102">
+                        <div class="input-with-slider">
+                            <input type="number" id="rgbR" min="0" max="255" value="102">
+                            <input type="range" id="rgbRSlider" min="0" max="255" value="102">
+                        </div>
                     </div>
                     <div class="input-group">
                         <label>G (0-255)</label>
-                        <input type="number" id="rgbG" min="0" max="255" value="126">
+                        <div class="input-with-slider">
+                            <input type="number" id="rgbG" min="0" max="255" value="126">
+                            <input type="range" id="rgbGSlider" min="0" max="255" value="126">
+                        </div>
                     </div>
                     <div class="input-group">
                         <label>B (0-255)</label>
-                        <input type="number" id="rgbB" min="0" max="255" value="234">
+                        <div class="input-with-slider">
+                            <input type="number" id="rgbB" min="0" max="255" value="234">
+                            <input type="range" id="rgbBSlider" min="0" max="255" value="234">
+                        </div>
                     </div>
                 </div>
                 <div class="color-display" id="rgbDisplay"></div>
@@ -257,15 +345,24 @@
                 <div class="hsv-inputs">
                     <div class="input-group">
                         <label>H (0-360)</label>
-                        <input type="number" id="hsvH" min="0" max="360" value="229">
+                        <div class="input-with-slider">
+                            <input type="number" id="hsvH" min="0" max="360" value="229">
+                            <input type="range" id="hsvHSlider" min="0" max="360" value="229">
+                        </div>
                     </div>
                     <div class="input-group">
                         <label>S (0-100)</label>
-                        <input type="number" id="hsvS" min="0" max="100" value="56">
+                        <div class="input-with-slider">
+                            <input type="number" id="hsvS" min="0" max="100" value="56">
+                            <input type="range" id="hsvSSlider" min="0" max="100" value="56">
+                        </div>
                     </div>
                     <div class="input-group">
                         <label>V (0-100)</label>
-                        <input type="number" id="hsvV" min="0" max="100" value="92">
+                        <div class="input-with-slider">
+                            <input type="number" id="hsvV" min="0" max="100" value="92">
+                            <input type="range" id="hsvVSlider" min="0" max="100" value="92">
+                        </div>
                     </div>
                 </div>
                 <div class="color-display" id="hsvDisplay"></div>
@@ -284,6 +381,8 @@
             </div>
         </div>
     </div>
+
+    <div class="toast" id="toast">コピーしました！</div>
 
     <script>
         // 色変換関数
@@ -370,15 +469,64 @@
             return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
         }
 
+        // RGB to LAB変換
+        function rgbToLab(r, g, b) {
+            // RGB to XYZ
+            let [rNorm, gNorm, bNorm] = [r/255, g/255, b/255];
+            
+            [rNorm, gNorm, bNorm] = [rNorm, gNorm, bNorm].map(val => {
+                return val > 0.04045 ? Math.pow((val + 0.055) / 1.055, 2.4) : val / 12.92;
+            });
+            
+            const x = rNorm * 0.4124564 + gNorm * 0.3575761 + bNorm * 0.1804375;
+            const y = rNorm * 0.2126729 + gNorm * 0.7151522 + bNorm * 0.0721750;
+            const z = rNorm * 0.0193339 + gNorm * 0.1191920 + bNorm * 0.9503041;
+            
+            // XYZ to LAB
+            const xn = 0.95047, yn = 1.00000, zn = 1.08883;
+            const fx = x/xn > 0.008856 ? Math.pow(x/xn, 1/3) : (7.787 * x/xn + 16/116);
+            const fy = y/yn > 0.008856 ? Math.pow(y/yn, 1/3) : (7.787 * y/yn + 16/116);
+            const fz = z/zn > 0.008856 ? Math.pow(z/zn, 1/3) : (7.787 * z/zn + 16/116);
+            
+            const L = 116 * fy - 16;
+            const a = 500 * (fx - fy);
+            const b_lab = 200 * (fy - fz);
+            
+            return { L: L.toFixed(2), a: a.toFixed(2), b: b_lab.toFixed(2) };
+        }
+
+        // RGB to CMYK変換
+        function rgbToCmyk(r, g, b) {
+            const rNorm = r / 255;
+            const gNorm = g / 255;
+            const bNorm = b / 255;
+            
+            const k = 1 - Math.max(rNorm, gNorm, bNorm);
+            const c = k === 1 ? 0 : (1 - rNorm - k) / (1 - k);
+            const m = k === 1 ? 0 : (1 - gNorm - k) / (1 - k);
+            const y = k === 1 ? 0 : (1 - bNorm - k) / (1 - k);
+            
+            return {
+                c: Math.round(c * 100),
+                m: Math.round(m * 100),
+                y: Math.round(y * 100),
+                k: Math.round(k * 100)
+            };
+        }
+
+        // トースト表示
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
         // コピー機能
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                // 簡単な成功フィードバック
-                const originalText = event.target.textContent;
-                event.target.textContent = 'コピー済み!';
-                setTimeout(() => {
-                    event.target.textContent = originalText;
-                }, 1000);
+                showToast();
             });
         }
 
@@ -387,26 +535,37 @@
             const hex = rgbToHex(r, g, b);
             const hsv = rgbToHsv(r, g, b);
             const luminance = getLuminance(r, g, b);
+            const lab = rgbToLab(r, g, b);
+            const cmyk = rgbToCmyk(r, g, b);
             
             targetElement.innerHTML = `
                 <div class="result-item">
-                    RGB: (${r}, ${g}, ${b})
+                    <span>RGB: (${r}, ${g}, ${b})</span>
                     <button class="copy-btn" onclick="copyToClipboard('rgb(${r}, ${g}, ${b})')">コピー</button>
                 </div>
                 <div class="result-item">
-                    HEX: ${hex}
-                    <button class="copy-btn" onclick="copyToClipboard('${hex}')"">コピー</button>
+                    <span>HEX: ${hex}</span>
+                    <button class="copy-btn" onclick="copyToClipboard('${hex}')">コピー</button>
                 </div>
                 <div class="result-item">
-                    HSV: (${hsv.h}°, ${hsv.s}%, ${hsv.v}%)
+                    <span>HSV: (${hsv.h}°, ${hsv.s}%, ${hsv.v}%)</span>
                     <button class="copy-btn" onclick="copyToClipboard('hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)')">コピー</button>
                 </div>
                 <div class="result-item">
-                    CSS: rgb(${r}, ${g}, ${b})
+                    <span>CSS: rgb(${r}, ${g}, ${b})</span>
                     <button class="copy-btn" onclick="copyToClipboard('rgb(${r}, ${g}, ${b})')">コピー</button>
                 </div>
                 <div class="result-item">
-                    輝度: ${luminance.toFixed(3)}
+                    <span>輝度: ${luminance.toFixed(3)}</span>
+                    <button class="copy-btn" onclick="copyToClipboard('${luminance.toFixed(3)}')">コピー</button>
+                </div>
+                <div class="result-item">
+                    <span>L*a*b*: L*:${lab.L} a*:${lab.a} b*:${lab.b}</span>
+                    <button class="copy-btn" onclick="copyToClipboard('L*:${lab.L} a*:${lab.a} b*:${lab.b}')">コピー</button>
+                </div>
+                <div class="result-item">
+                    <span>CMYK: C:${cmyk.c}% M:${cmyk.m}% Y:${cmyk.y}% K:${cmyk.k}%</span>
+                    <button class="copy-btn" onclick="copyToClipboard('C:${cmyk.c}% M:${cmyk.m}% Y:${cmyk.y}% K:${cmyk.k}%')">コピー</button>
                 </div>
             `;
         }
@@ -420,25 +579,81 @@
             
             const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
             const luminance = getLuminance(rgb.r, rgb.g, rgb.b);
+            const lab = rgbToLab(rgb.r, rgb.g, rgb.b);
+            const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
             
             document.getElementById('mainColorInfo').innerHTML = `
                 <div class="info-card">
-                    <div class="info-title">HEX</div>
-                    <div class="info-value">${color.toUpperCase()}</div>
+                    <div class="info-content">
+                        <div class="info-title">HEX</div>
+                        <div class="info-value">${color.toUpperCase()}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('${color.toUpperCase()}')">コピー</button>
                 </div>
                 <div class="info-card">
-                    <div class="info-title">RGB</div>
-                    <div class="info-value">(${rgb.r}, ${rgb.g}, ${rgb.b})</div>
+                    <div class="info-content">
+                        <div class="info-title">RGB</div>
+                        <div class="info-value">(${rgb.r}, ${rgb.g}, ${rgb.b})</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('rgb(${rgb.r}, ${rgb.g}, ${rgb.b})')">コピー</button>
                 </div>
                 <div class="info-card">
-                    <div class="info-title">HSV</div>
-                    <div class="info-value">(${hsv.h}°, ${hsv.s}%, ${hsv.v}%)</div>
+                    <div class="info-content">
+                        <div class="info-title">HSV</div>
+                        <div class="info-value">(${hsv.h}°, ${hsv.s}%, ${hsv.v}%)</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)')">コピー</button>
                 </div>
                 <div class="info-card">
-                    <div class="info-title">輝度</div>
-                    <div class="info-value">${luminance.toFixed(3)}</div>
+                    <div class="info-content">
+                        <div class="info-title">CSS</div>
+                        <div class="info-value">rgb(${rgb.r}, ${rgb.g}, ${rgb.b})</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('rgb(${rgb.r}, ${rgb.g}, ${rgb.b})')">コピー</button>
+                </div>
+                <div class="info-card">
+                    <div class="info-content">
+                        <div class="info-title">輝度</div>
+                        <div class="info-value">${luminance.toFixed(3)}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('${luminance.toFixed(3)}')">コピー</button>
+                </div>
+                <div class="info-card">
+                    <div class="info-content">
+                        <div class="info-title">L*a*b*</div>
+                        <div class="info-value">L*:${lab.L} a*:${lab.a} b*:${lab.b}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('L*:${lab.L} a*:${lab.a} b*:${lab.b}')">コピー</button>
+                </div>
+                <div class="info-card">
+                    <div class="info-content">
+                        <div class="info-title">CMYK</div>
+                        <div class="info-value">C:${cmyk.c}% M:${cmyk.m}% Y:${cmyk.y}% K:${cmyk.k}%</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('C:${cmyk.c}% M:${cmyk.m}% Y:${cmyk.y}% K:${cmyk.k}%')">コピー</button>
                 </div>
             `;
+        }
+
+        // RGB入力とスライダーの同期
+        function syncRgbInputs() {
+            const r = parseInt(document.getElementById('rgbR').value) || 0;
+            const g = parseInt(document.getElementById('rgbG').value) || 0;
+            const b = parseInt(document.getElementById('rgbB').value) || 0;
+            
+            document.getElementById('rgbRSlider').value = r;
+            document.getElementById('rgbGSlider').value = g;
+            document.getElementById('rgbBSlider').value = b;
+        }
+
+        function syncRgbSliders() {
+            const r = parseInt(document.getElementById('rgbRSlider').value);
+            const g = parseInt(document.getElementById('rgbGSlider').value);
+            const b = parseInt(document.getElementById('rgbBSlider').value);
+            
+            document.getElementById('rgbR').value = r;
+            document.getElementById('rgbG').value = g;
+            document.getElementById('rgbB').value = b;
         }
 
         // RGB入力の更新
@@ -447,7 +662,6 @@
             const g = parseInt(document.getElementById('rgbG').value) || 0;
             const b = parseInt(document.getElementById('rgbB').value) || 0;
             
-            // 値の範囲チェック
             const validR = Math.max(0, Math.min(255, r));
             const validG = Math.max(0, Math.min(255, g));
             const validB = Math.max(0, Math.min(255, b));
@@ -457,13 +671,33 @@
             displayColorInfo(validR, validG, validB, document.getElementById('rgbResult'));
         }
 
+        // HSV入力とスライダーの同期
+        function syncHsvInputs() {
+            const h = parseInt(document.getElementById('hsvH').value) || 0;
+            const s = parseInt(document.getElementById('hsvS').value) || 0;
+            const v = parseInt(document.getElementById('hsvV').value) || 0;
+            
+            document.getElementById('hsvHSlider').value = h;
+            document.getElementById('hsvSSlider').value = s;
+            document.getElementById('hsvVSlider').value = v;
+        }
+
+        function syncHsvSliders() {
+            const h = parseInt(document.getElementById('hsvHSlider').value);
+            const s = parseInt(document.getElementById('hsvSSlider').value);
+            const v = parseInt(document.getElementById('hsvVSlider').value);
+            
+            document.getElementById('hsvH').value = h;
+            document.getElementById('hsvS').value = s;
+            document.getElementById('hsvV').value = v;
+        }
+
         // HSV入力の更新
         function updateHsvColor() {
             const h = parseInt(document.getElementById('hsvH').value) || 0;
             const s = parseInt(document.getElementById('hsvS').value) || 0;
             const v = parseInt(document.getElementById('hsvV').value) || 0;
             
-            // 値の範囲チェック
             const validH = Math.max(0, Math.min(360, h));
             const validS = Math.max(0, Math.min(100, s));
             const validV = Math.max(0, Math.min(100, v));
@@ -498,12 +732,34 @@
         // イベントリスナーの設定
         document.getElementById('mainColorPicker').addEventListener('input', updateMainColor);
         
+        // RGB入力とスライダーのイベントリスナー
         ['rgbR', 'rgbG', 'rgbB'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateRgbColor);
+            document.getElementById(id).addEventListener('input', () => {
+                syncRgbInputs();
+                updateRgbColor();
+            });
         });
         
+        ['rgbRSlider', 'rgbGSlider', 'rgbBSlider'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                syncRgbSliders();
+                updateRgbColor();
+            });
+        });
+        
+        // HSV入力とスライダーのイベントリスナー
         ['hsvH', 'hsvS', 'hsvV'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateHsvColor);
+            document.getElementById(id).addEventListener('input', () => {
+                syncHsvInputs();
+                updateHsvColor();
+            });
+        });
+        
+        ['hsvHSlider', 'hsvSSlider', 'hsvVSlider'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                syncHsvSliders();
+                updateHsvColor();
+            });
         });
         
         document.getElementById('hexInput').addEventListener('input', updateHexColor);
